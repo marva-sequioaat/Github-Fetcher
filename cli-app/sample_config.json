@@ -1,0 +1,15 @@
+{
+    "username": "github_username",
+    "repositories": ["repo1", "repo2"],
+    "path": {
+        "output_path": "./output",
+        "log_path": "./logs"
+    },
+    "timeout": 30,
+    "metrics": {
+        "branches": true,
+        "forks": true,
+        "stars": true,
+        "commits": true
+    }
+}
