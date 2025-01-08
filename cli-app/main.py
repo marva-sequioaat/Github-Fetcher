@@ -35,49 +35,49 @@ schema = {
 }
 
 # Function to load and validate JSON
-# def validate_json(file_path):
-#     try:
-#         with open(file_path, "r") as f:
-#             data = json.load(f)  # Load JSON file
-#         validate(instance=data, schema=schema)  # Validate against schema
-#         print("JSON is valid!")
-#     except FileNotFoundError:
-#         print(f"Error: File '{file_path}' not found.")
-#     except json.JSONDecodeError:
-#         print("Error: Invalid JSON format.")
-#     except ValidationError as e:
-#         print(f"Error: {e.message}")
-
 def validate_json(file_path):
     try:
-        # First check if file exists
-        if not os.path.exists(file_path):
-            print(f"Error: File '{file_path}' not found.")
-            print(f"Current working directory: {os.getcwd()}")
-            return
-
-        # Try to read the file contents
         with open(file_path, "r") as f:
-            file_content = f.read()
-            print("File content:", file_content)  # Debug print
-            
-            try:
-                data = json.loads(file_content)  # Load JSON file
-            except json.JSONDecodeError as json_err:
-                print(f"JSON Decode Error: {str(json_err)}")
-                print(f"Error occurred at line {json_err.lineno}, column {json_err.colno}")
-                return
-
-        # Validate against schema
-        validate(instance=data, schema=schema)
+            data = json.load(f)  # Load JSON file
+        validate(instance=data, schema=schema)  # Validate against schema
         print("JSON is valid!")
-        return data
-
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+    except json.JSONDecodeError:
+        print("Error: Invalid JSON format.")
     except ValidationError as e:
-        print(f"Schema Validation Error: {e.message}")
-        print(f"Failed at path: {' -> '.join(str(p) for p in e.path)}")
-    except Exception as e:
-        print(f"Unexpected error: {str(e)}")
+        print(f"Error: {e.message}")
+
+# def validate_json(file_path):
+#     try:
+#         # First check if file exists
+#         if not os.path.exists(file_path):
+#             print(f"Error: File '{file_path}' not found.")
+#             print(f"Current working directory: {os.getcwd()}")
+#             return
+
+#         # Try to read the file contents
+#         with open(file_path, "r") as f:
+#             file_content = f.read()
+#             print("File content:", file_content)  # Debug print
+            
+#             try:
+#                 data = json.loads(file_content)  # Load JSON file
+#             except json.JSONDecodeError as json_err:
+#                 print(f"JSON Decode Error: {str(json_err)}")
+#                 print(f"Error occurred at line {json_err.lineno}, column {json_err.colno}")
+#                 return
+
+#         # Validate against schema
+#         validate(instance=data, schema=schema)
+#         print("JSON is valid!")
+#         return data
+
+#     except ValidationError as e:
+#         print(f"Schema Validation Error: {e.message}")
+#         print(f"Failed at path: {' -> '.join(str(p) for p in e.path)}")
+#     except Exception as e:
+#         print(f"Unexpected error: {str(e)}")
 
 # Entry point for the script
 if __name__ == "__main__":
