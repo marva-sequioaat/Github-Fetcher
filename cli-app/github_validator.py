@@ -3,6 +3,14 @@ import os
 from typing import List, Dict, Union
 
 class GitHubValidators:
+
+    # Class attributes for constants
+    USERNAME_REGEX = r'^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){2,38}$'
+    REPO_NAME_REGEX = r'^[a-zA-Z0-9._-]+$'
+    TIMEOUT_MIN = 10
+    TIMEOUT_MAX = 60
+    VALID_METRICS = {'forks', 'branches', 'commits', 'stars'}
+
     @staticmethod
     def validate_username(username: str) -> bool:
         """
@@ -20,8 +28,8 @@ class GitHubValidators:
             raise ValueError("Username must be between 4 and 39 characters")
             
         # Check pattern
-        pattern = r'^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){2,38}$'
-        if not re.match(pattern, username):
+       
+        if not re.match(GitHubValidators.USERNAME_REGEX, username):
             raise ValueError("Invalid username format. Use only alphanumeric characters and single hyphens (not at start/end)")
             
         return True
@@ -46,8 +54,7 @@ class GitHubValidators:
             raise ValueError("Repository name cannot end with a dot")
             
         # Check pattern
-        pattern = r'^[a-zA-Z0-9._-]+$'
-        if not re.match(pattern, repo_name):
+        if not re.match(GitHubValidators.REPO_NAME_REGEX, repo_name):
             raise ValueError("Invalid repository name. Use only alphanumeric characters, hyphens, underscores, and dots")
             
         return True
@@ -113,24 +120,13 @@ class GitHubValidators:
         """
         if not isinstance(metrics, dict):
             raise ValueError("Metrics must be provided as a dictionary")
-            
-        valid_metrics = {'forks', 'branches', 'commits', 'stars'}
-        
-        # Check for invalid metrics
-        invalid_metrics = set(metrics.keys()) - valid_metrics
-        if invalid_metrics:
-            raise ValueError(f"Invalid metrics found: {invalid_metrics}")
-            
-        # Check if all required metrics are present
-        missing_metrics = valid_metrics - set(metrics.keys())
-        if missing_metrics:
-            raise ValueError(f"Missing required metrics: {missing_metrics}")
-            
-        # Check types and if at least one is True
-        if not any(isinstance(v, bool) and v for v in metrics.values()):
+
+        if not GitHubValidators.VALID_METRICS.issuperset(metrics.keys()):
+            raise ValueError("Invalid metrics found.")
+        if not any(metrics.values()):
             raise ValueError("At least one metric must be set to true")
-            
-        return True
+        return True   
+    
 
     @staticmethod
     def validate_timeout(timeout: Union[int, float]) -> bool:
@@ -145,8 +141,10 @@ class GitHubValidators:
         if not isinstance(timeout, int):
             raise ValueError("Timeout must be an integer")
             
-        if not 10 <= timeout <= 60:
-            raise ValueError("Timeout must be between 10 and 60 seconds")
+        if not GitHubValidators.TIMEOUT_MIN <= timeout <= GitHubValidators.TIMEOUT_MAX:
+            raise ValueError(
+            f"Timeout must be between {GitHubValidators.TIMEOUT_MIN} and {GitHubValidators.TIMEOUT_MAX} seconds"
+            )
             
         return True
 
