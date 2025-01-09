@@ -1,8 +1,30 @@
+"""
+GitHub Configuration Validator Module
+
+This module provides validation functionality for GitHub-related configurations through
+the GitHubValidators class. It implements comprehensive validation for usernames,
+repository names, paths, metrics, and other GitHub-specific parameters.
+
+The module ensures that all configuration parameters meet GitHub's requirements and
+best practices for API interaction and data collection.
+
+"""
+
 import re
 import os
 from typing import List, Dict, Union
 
 class GitHubValidators:
+    """
+    A class providing validation methods for GitHub-related configurations.
+
+    This class contains static methods to validate various components of a GitHub
+    configuration including usernames, repository names, paths, and metrics settings.
+    It ensures all configuration parameters meet GitHub's requirements and practical
+    constraints for API interaction.
+
+   
+    """
 
     # Class attributes for constants
     USERNAME_REGEX = r'^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){2,38}$'
@@ -14,21 +36,25 @@ class GitHubValidators:
     @staticmethod
     def validate_username(username: str) -> bool:
         """
-        Validate GitHub username according to GitHub standards.
-        - Alphanumeric characters and single hyphens only
-        - No consecutive hyphens
-        - No hyphens at start/end
-        - Length: 4-39 characters
+        Validates a GitHub username against GitHub's username requirements.
+
+        Args:
+            username (str): The GitHub username to validate
+
+        Returns:
+            bool: True if the username is valid
+
+        Raises:
+            ValueError: If the username is invalid, with a specific error message
+                detailing the validation failure
+
         """
         if not isinstance(username, str):
             raise ValueError("Username must be a string")
             
-        # Check length
         if not 4 <= len(username) <= 39:
             raise ValueError("Username must be between 4 and 39 characters")
             
-        # Check pattern
-       
         if not re.match(GitHubValidators.USERNAME_REGEX, username):
             raise ValueError("Invalid username format. Use only alphanumeric characters and single hyphens (not at start/end)")
             
@@ -37,23 +63,28 @@ class GitHubValidators:
     @staticmethod
     def validate_repository_name(repo_name: str) -> bool:
         """
-        Validate repository name.
-        - Length: 1-100 characters
-        - Allowed characters: alphanumeric, -, _, .
-        - Cannot end with .
+        Validates a GitHub repository name against naming conventions.
+
+        Args:
+            repo_name (str): The repository name to validate
+
+        Returns:
+            bool: True if the repository name is valid
+
+        Raises:
+            ValueError: If the repository name is invalid, with a specific error
+                message detailing the validation failure
+
         """
         if not isinstance(repo_name, str):
             raise ValueError("Repository name must be a string")
             
-        # Check length
         if not 1 <= len(repo_name) <= 100:
             raise ValueError("Repository name must be between 1 and 100 characters")
             
-        # Check if ends with dot
         if repo_name.endswith('.'):
             raise ValueError("Repository name cannot end with a dot")
             
-        # Check pattern
         if not re.match(GitHubValidators.REPO_NAME_REGEX, repo_name):
             raise ValueError("Invalid repository name. Use only alphanumeric characters, hyphens, underscores, and dots")
             
@@ -62,19 +93,25 @@ class GitHubValidators:
     @staticmethod
     def validate_repository_list(repos: List[str]) -> bool:
         """
-        Validate repository list.
-        - Must be array of valid repository names
-        - Min repos: 1
-        - Max repos: 10
+        Validates a list of GitHub repository names.
+
+        Args:
+            repos (List[str]): List of repository names to validate
+
+        Returns:
+            bool: True if all repository names are valid
+
+        Raises:
+            ValueError: If the repository list is invalid or any repository name
+                is invalid, with a specific error message
+
         """
         if not isinstance(repos, list):
             raise ValueError("Repositories must be provided as a list")
             
-        # Check list length
         if not 1 <= len(repos) <= 10:
             raise ValueError("Number of repositories must be between 1 and 10")
             
-        # Validate each repository name
         for repo in repos:
             GitHubValidators.validate_repository_name(repo)
             
@@ -83,18 +120,27 @@ class GitHubValidators:
     @staticmethod
     def validate_path(path: str, check_writable: bool = True) -> bool:
         """
-        Validate path.
-        - Must be a valid path string
-        - Must be writable if check_writable is True
+        Validates a filesystem path and optionally checks write permissions.
+
+        Args:
+            path (str): The filesystem path to validate
+            check_writable (bool, optional): Whether to verify write permissions.
+                Defaults to True.
+
+        Returns:
+            bool: True if the path is valid and writable (if check_writable is True)
+
+        Raises:
+            ValueError: If the path is invalid or not writable (when check_writable
+                is True), with a specific error message
         """
+        
         if not isinstance(path, str):
             raise ValueError("Path must be a string")
             
-        # Convert to absolute path if relative
         abs_path = os.path.abspath(path)
-        
-        # Check if parent directory exists and is writable
         parent_dir = os.path.dirname(abs_path)
+        
         if not os.path.exists(parent_dir):
             try:
                 os.makedirs(parent_dir)
@@ -114,9 +160,18 @@ class GitHubValidators:
     @staticmethod
     def validate_metrics(metrics: Dict[str, bool]) -> bool:
         """
-        Validate metrics configuration.
-        - Must have correct options (forks, branches, commits, stars)
-        - At least one must be True
+        Validates the metrics configuration dictionary.
+
+        Args:
+            metrics (Dict[str, bool]): Dictionary of metric names and their enabled status
+
+        Returns:
+            bool: True if the metrics configuration is valid
+
+        Raises:
+            ValueError: If the metrics configuration is invalid, with a specific
+                error message
+
         """
         if not isinstance(metrics, dict):
             raise ValueError("Metrics must be provided as a dictionary")
@@ -125,15 +180,22 @@ class GitHubValidators:
             raise ValueError("Invalid metrics found.")
         if not any(metrics.values()):
             raise ValueError("At least one metric must be set to true")
-        return True   
-    
+        return True
 
     @staticmethod
     def validate_timeout(timeout: Union[int, float]) -> bool:
         """
-        Validate timeout value.
-        - Range: 10-60 seconds
-        - Type: integer
+        Validates the timeout value for API requests.
+
+        Args:
+            timeout (Union[int, float]): The timeout value in seconds
+
+        Returns:
+            bool: True if the timeout value is valid
+
+        Raises:
+            ValueError: If the timeout value is invalid, with a specific error message
+
         """
         if not isinstance(timeout, (int, float)):
             raise ValueError("Timeout must be a number")
@@ -143,7 +205,7 @@ class GitHubValidators:
             
         if not GitHubValidators.TIMEOUT_MIN <= timeout <= GitHubValidators.TIMEOUT_MAX:
             raise ValueError(
-            f"Timeout must be between {GitHubValidators.TIMEOUT_MIN} and {GitHubValidators.TIMEOUT_MAX} seconds"
+                f"Timeout must be between {GitHubValidators.TIMEOUT_MIN} and {GitHubValidators.TIMEOUT_MAX} seconds"
             )
             
         return True
@@ -151,8 +213,21 @@ class GitHubValidators:
     @classmethod
     def validate_config(cls, config: dict) -> bool:
         """
-        Validate entire configuration dictionary.
-        Raises ValueError with specific error message if validation fails.
+        Validates the entire configuration dictionary.
+
+        Performs comprehensive validation of all configuration parameters including
+        username, repositories, paths, metrics, and timeout settings.
+
+        Args:
+            config (dict): The complete configuration dictionary to validate
+
+        Returns:
+            bool: True if the entire configuration is valid
+
+        Raises:
+            ValueError: If any part of the configuration is invalid, with a specific
+                error message detailing which validation failed
+
         """
         try:
             cls.validate_username(config.get('username', ''))
@@ -168,3 +243,4 @@ class GitHubValidators:
             return True
         except Exception as e:
             raise ValueError(f"Configuration validation failed: {str(e)}")
+

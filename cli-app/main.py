@@ -1,4 +1,10 @@
 
+"""
+CLI tool for validating GitHub configuration JSON files.
+Provides functionality to display sample JSON and validate config files
+against a predefined schema and GitHub-specific requirements.
+"""
+
 import json
 import os
 from typing import Optional
@@ -18,7 +24,7 @@ def display_sample_json(file_path: str) -> None:
     try:
         if os.path.exists(file_path):
             with open(file_path, "r") as file:
-                content= json.load(file)
+                content = json.load(file)
                 print("\nSample JSON File Content:")
                 print(json.dumps(content, indent=4))
         else:
@@ -28,7 +34,7 @@ def display_sample_json(file_path: str) -> None:
 
 def validate_json(file_path: str) -> None:
     """
-    Validates a JSON file against a predefined schema and GitHub-specific validations.
+    Validates a JSON file against schema and GitHub requirements.
 
     Args:
         file_path (str): Path to the JSON file to validate.
@@ -61,32 +67,28 @@ def validate_json(file_path: str) -> None:
 if __name__ == "__main__":
     import argparse
 
-    parser= argparse.ArgumentParser(description="CLI JSON Validator")
-    parser.add_argument("--show-sample",nargs="?",const=DEFAULT_SAMPLE_FILE,
-                         help="Path to the sample JSON file")
+    parser = argparse.ArgumentParser(description="CLI JSON Validator")
+    parser.add_argument("--show-sample", nargs="?", const=DEFAULT_SAMPLE_FILE,
+                       help="Path to the sample JSON file")
     parser.add_argument("--config", help="Path to the JSON config file to validate", metavar="FILE")
-    args= parser.parse_args()
+    args = parser.parse_args()
 
-    # Display the sample JSON if the argument is provided
+    # Case 1: Both --show-sample and --config are provided
     if args.show_sample and args.config:
-        if args.show_sample:
-            display_sample_json(args.show_sample)
+        display_sample_json(args.show_sample)
+        validate_json(args.config)
 
-        # Validate the JSON configuration file if the argument is provided
+    # Case 2: Only --show-sample is provided
+    elif args.show_sample:
+        display_sample_json(args.show_sample)
+
+    # Case 3: Only --config is provided
+    elif args.config:
         if args.config:
             validate_json(args.config)
         else:
             print("Error: No config file provided for validation. Use --config <FILE>.")
 
-    elif args.show_sample:
-        display_sample_json(args.show_sample)
-
-    elif args.config:
-        validate_json(args.config)
-        if args.config:
-            validate_json(args.config)
-        else:
-            print("Error: No config file provided for validation. Use --config <FILE>.")   
-
+    # Case 4: No arguments provided
     else:
         print("Error: No arguments provided. Use --show-sample or --config.")
