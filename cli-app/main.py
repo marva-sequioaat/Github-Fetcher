@@ -50,7 +50,8 @@ def validate_json(file_path: str) -> None:
         validate(instance=data, schema=schema)
 
         # Perform GitHub-specific validations
-        GitHubValidators.validate_config(data)
+        validator=GitHubValidators()
+        validator.validate_config(data)
 
         print("JSON is valid!")
     except FileNotFoundError as e:
