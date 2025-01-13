@@ -1,0 +1,42 @@
+# FETGitHub
+
+# What is this project?
+This CLI tool validates configuration files that will be used to fetch metrics (like branches, commits, stars, forks) from GitHub repositories. It checks if your input JSON file is properly formatted and contains valid data.
+
+
+# Project Files
+
+cd cli-app-poetry/cli_app_poetry
+
+main.py: Main program that reads and validates the JSON file
+validators/github_validator.py: Contains all validation rules for GitHub data
+validators/sample.json: Example file showing how your input should look
+tests/test_input_validation.py: Test cases to verify the validators work correctly
+
+
+
+
+## Install Dependencies
+
+To install the dependencies for this project, make sure you have **Poetry** installed. You can install it by running the following command:
+
+pipx install poetry
+
+
+# create json file in the following format
+
+{
+    "username": "github_username",
+    "repositories": ["repo1", "repo2"]
+}
+
+
+# run the program
+
+poetry python main.py --config your_config.json
+
+# Testing
+
+to run test give the following command
+cd ..
+poetry run pytest
