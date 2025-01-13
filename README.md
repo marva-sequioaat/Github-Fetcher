@@ -6,47 +6,37 @@ This CLI tool validates configuration files that will be used to fetch metrics (
 
 # Project Files
 
-cd cli-app
+cd cli-app-poetry/cli_app_poetry
 
 main.py: Main program that reads and validates the JSON file
-github_validator.py: Contains all validation rules for GitHub data
-sample_config.json: Example file showing how your input should look
-tests/tests_validator.py: Test cases to verify the validators work correctly
+validators/github_validator.py: Contains all validation rules for GitHub data
+validators/sample.json: Example file showing how your input should look
+tests/test_input_validation.py: Test cases to verify the validators work correctly
 
 
-# How to use
 
-Make sure you have Python installed
-Install required packages:
 
-pip install -r requirments.txt
+## Install Dependencies
+
+To install the dependencies for this project, make sure you have **Poetry** installed. You can install it by running the following command:
+
+pipx install poetry
 
 
 # create json file in the following format
 
 {
     "username": "github_username",
-    "repositories": ["repo1", "repo2"],
-    "path": {
-        "output_path": "./output",
-        "log_path": "./logs"
-    },
-    "timeout": 30,
-    "metrics": {
-        "branches": true,
-        "forks": true,
-        "stars": true,
-        "commits": true
-    }
+    "repositories": ["repo1", "repo2"]
 }
 
 
 # run the program
 
-python main.py --config your_config.json
+poetry python main.py --config your_config.json
 
 # Testing
 
 to run test give the following command
-
-python -m pytest tests/tests_validator.py -v
+cd ..
+poetry run pytest
