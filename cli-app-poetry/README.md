@@ -12,7 +12,7 @@ main.py: Main program that reads and validates the JSON file
 validators/github_validator.py: Contains all validation rules for GitHub data
 validators/sample.json: Example file showing how your input should look
 tests/test_input_validation.py: Test cases to verify the validators work correctly
-
+fetchers/api.py- Contains function that calls Github api and fetch data
 
 
 

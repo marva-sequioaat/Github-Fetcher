@@ -1,5 +1,18 @@
 
 
+"""GitHub Repository Data Fetcher
+
+This script provides functionality to interact with the GitHub API to fetch
+details about public repositories. It retrieves the following information for 
+each specified repository:
+
+- Number of stars
+- Number of forks
+- List of branches
+- Count of recent commits (up to 30)
+
+The script processes multiple repositories for a given user, aggregates the 
+total stars and forks across all repositories, and prints a summary """
 
 import sys
 import requests
