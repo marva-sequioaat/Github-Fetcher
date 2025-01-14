@@ -33,10 +33,19 @@ pipx install poetry
 
 # run the program
 
-poetry python main.py --config your_config.json
+poetry run python main.py --config your_config.json
 
 # Testing
 
 to run test give the following command
 cd ..
 poetry run pytest
+
+# Exit code
+ 0 -Success:The operation completed successfully without any errors.
+ 1 -Failure:No arguments were provided, or required arguments are missing.
+ 2 -Failure:The specified file was not found or does not exist.
+ 3 -Failure:The provided JSON file has invalid formatting.
+ 4 -Failure:The JSON file does not conform to the required schema.
+ 5 -Failure:The GitHub-specific validations failed for the provided configuration.
+ 99 -Failure:An unexpected error occurred during execution.

@@ -7,10 +7,12 @@ against a predefined schema and GitHub-specific requirements.
 
 import json
 import os
+import sys
 from typing import Optional
 from jsonschema import validate, ValidationError
 from validators.schema import schema
 from validators.github_validator import GitHubValidators
+
 DEFAULT_SAMPLE_FILE = "sample.json"
 
 def display_sample_json(file_path: str) -> None:
@@ -23,15 +25,18 @@ def display_sample_json(file_path: str) -> None:
                 print(json.dumps(content, indent=4))
         else:
             print(f"Error: Sample JSON file '{file_path}' not found.")
+            sys.exit(2) # File not found
     except Exception as e:
         print(f"Unexpected error while displaying sample JSON: {e}")
+        sys.exit(99) # Unexpected error
 
 def validate_json(file_path: str) -> None:
     """Validates a JSON file against schema and GitHub requirements."""
     try:
         if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File '{file_path}' not found.")
-
+            # raise FileNotFoundError(f"File '{file_path}' not found.")
+            print(f"File '{file_path}' not found.")
+            sys.exit(2)  # File not found
         with open(file_path, "r") as f:
             data = json.load(f)
 
@@ -45,6 +50,7 @@ def validate_json(file_path: str) -> None:
         print("JSON is valid!")
     except FileNotFoundError as e:
         print(f"Error: {e}")
+        sys.exit(2) #File not found
     except json.JSONDecodeError as e:
         # Detailed error reporting
         error_line = e.lineno
@@ -53,14 +59,17 @@ def validate_json(file_path: str) -> None:
         
         print(f"Error: Invalid JSON format on line {error_line}, column {error_col}.")
         print(f"Details: {error_message}")
-
+        sys.exit(3)  # Invalid JSON format
         # print(f"Error: Invalid JSON format. {e.msg}")
     except ValidationError as e:
         print(f"Schema Validation Error: {e.message}")
+        sys.exit(4)  # Schema validation error
     except ValueError as e:
         print(f"Value Error during validation: {e}")
+        sys.exit(5)  # GitHub-specific validation error
     except Exception as e:
         print(f"Unexpected error during validation: {e}")
+        sys.exit(99)  # Unexpected error
 
 if __name__ == "__main__":
     import argparse
@@ -69,13 +78,22 @@ if __name__ == "__main__":
     parser.add_argument("--show-sample", nargs="?", const=DEFAULT_SAMPLE_FILE, help="Path to the sample JSON file")
     parser.add_argument("--config", help="Path to the JSON config file to validate")
     args = parser.parse_args()
+    try:
+        if args.show_sample and args.config:
+            display_sample_json(args.show_sample)
+            validate_json(args.config)
+        elif args.show_sample:
+            display_sample_json(args.show_sample)
+        elif args.config:
+            validate_json(args.config)
+        else:
+            print("Error: No arguments provided. Use --show-sample or --config.")
+            sys.exit(1)  # No arguments provided
 
-    if args.show_sample and args.config:
-        display_sample_json(args.show_sample)
-        validate_json(args.config)
-    elif args.show_sample:
-        display_sample_json(args.show_sample)
-    elif args.config:
-        validate_json(args.config)
-    else:
-        print("Error: No arguments provided. Use --show-sample or --config.")
+      
+        print("Operation completed successfully.")
+        sys.exit(0)  #success exit code
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        sys.exit(99)  # General unexpected error
