@@ -212,6 +212,17 @@ files = [
 referencing = ">=0.31.0"
 
 [[package]]
+name = "mocker"
+version = "1.1.1"
+description = "Graceful platform for test doubles in Python (mocks, stubs, fakes, and dummies)."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "mocker-1.1.1.tar.bz2", hash = "sha256:2009911707c74b28bdc9959b5224717e45fcb93475b4b7bb4efad3285fcf2919"},
+]
+
+[[package]]
 name = "packaging"
 version = "24.2"
 description = "Core utilities for Python packages"
@@ -259,6 +270,24 @@ pluggy = ">=1.5,<2"
 
 [package.extras]
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
+
+[[package]]
+name = "pytest-mock"
+version = "3.14.0"
+description = "Thin-wrapper around the mock package for easier use with pytest"
+optional = false
+python-versions = ">=3.8"
+groups = ["dev"]
+files = [
+    {file = "pytest-mock-3.14.0.tar.gz", hash = "sha256:2719255a1efeceadbc056d6bf3df3d1c5015530fb40cf347c0f9afac88410bd0"},
+    {file = "pytest_mock-3.14.0-py3-none-any.whl", hash = "sha256:0b72c38033392a5f4621342fe11e9219ac11ec9d375f8e2a0c164539e0d70f6f"},
+]
+
+[package.dependencies]
+pytest = ">=6.2.5"
+
+[package.extras]
+dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
 name = "referencing"
@@ -450,4 +479,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "b38980e66347cda78a012c3d9a3618be602dd3c003b615b223126d725ed304cf"
+content-hash = "29fa8a34e9cfd6552752440bdabc9f3cbd18bf8b214bf533d2e3038e74c21039"
