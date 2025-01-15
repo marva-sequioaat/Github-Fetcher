@@ -30,16 +30,33 @@ pipx install poetry
     "repositories": ["repo1", "repo2"]
 }
 
+# setting up the project
+after cloning this project,you need to run the following commands to set up the poetry app
+
+cd ..
+
+poetry install
+
+to activate the virtual env give the command
+
+poetry env activate
+
+
+this will prints the activate command of the virtual environment to the console. Manually copy paste the command and run them to activate venv
 
 # run the program
 
-poetry run python main.py --config your_config.json
+cd cli_app_poetry
+
+python main.py --config your_config.json
 
 # Testing
 
 to run test give the following command
+
 cd ..
-poetry run pytest
+
+pytest -svv tests
 
 # Exit code
  0 -Success:The operation completed successfully without any errors.
