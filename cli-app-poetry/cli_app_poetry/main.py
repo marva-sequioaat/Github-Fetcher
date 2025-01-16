@@ -85,14 +85,16 @@ if __name__ == "__main__":
     parser.add_argument("--config", help="Path to the JSON config file to validate")
     args = parser.parse_args()
     try:
+        csv_file_path="github_repo_data.csv"
         if args.show_sample and args.config:
             display_sample_json(args.show_sample)
             data=validate_json(args.config)
             username=data.get("username")
             repos=data.get("repositories")
+            
             if username and repos:
                 try:
-                    fetch_github_repo_data(username, repos)
+                    fetch_github_repo_data(username, repos,csv_file_path)
                 except Exception as e:
                     print(f"an error occured {e}")
                     sys.exit(99)
@@ -107,7 +109,7 @@ if __name__ == "__main__":
             repos=data.get("repositories")
             if username and repos:
                 try:
-                    fetch_github_repo_data(username, repos)
+                    fetch_github_repo_data(username, repos,csv_file_path)
                 except Exception as e:
                     print(f"an error occured {e}")
                     sys.exit(99)
