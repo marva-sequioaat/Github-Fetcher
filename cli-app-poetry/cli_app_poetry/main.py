@@ -13,7 +13,10 @@ from jsonschema import validate, ValidationError
 from validators.schema import schema
 from validators.github_validator import GitHubValidators
 from fetchers.api import fetch_github_repo_data
-DEFAULT_SAMPLE_FILE = "sample.json"
+from importlib.resources import files
+
+# DEFAULT_SAMPLE_FILE = "sample.json"
+DEFAULT_SAMPLE_FILE =  files('cli_app_poetry.validators').joinpath('sample.json')
 
 def display_sample_json(file_path: str) -> None:
     """Displays the content of the sample JSON file."""
@@ -85,25 +88,37 @@ if __name__ == "__main__":
         if args.show_sample and args.config:
             display_sample_json(args.show_sample)
             data=validate_json(args.config)
+            username=data.get("username")
+            repos=data.get("repositories")
+            if username and repos:
+                try:
+                    fetch_github_repo_data(username, repos)
+                except Exception as e:
+                    print(f"an error occured {e}")
+                    sys.exit(99)
+            else:
+                print("Error: JSON file does not contain 'username' or 'repository'.")
+                sys.exit(5)  # Missing required fields
         elif args.show_sample:
             display_sample_json(args.show_sample)
         elif args.config:
             data=validate_json(args.config)
+            username=data.get("username")
+            repos=data.get("repositories")
+            if username and repos:
+                try:
+                    fetch_github_repo_data(username, repos)
+                except Exception as e:
+                    print(f"an error occured {e}")
+                    sys.exit(99)
+            else:
+                print("Error: JSON file does not contain 'username' or 'repository'.")
+                sys.exit(5)  # Missing required fields
         else:
             print("Error: No arguments provided. Use --show-sample or --config.")
             sys.exit(1)  # No arguments provided
 
-        username=data.get("username")
-        repos=data.get("repositories")
-        if username and repos:
-            try:
-                fetch_github_repo_data(username, repos)
-            except Exception as e:
-                print(f"an error occured {e}")
-                sys.exit(99)
-        else:
-            print("Error: JSON file does not contain 'username' or 'repository'.")
-            sys.exit(5)  # Missing required fields
+        
 
         
         

@@ -16,6 +16,8 @@ total stars and forks across all repositories, and prints a summary """
 
 import sys
 import requests
+import pandas as db
+
 GITHUB_API_URL = "https://api.github.com"
 
 def fetch_github_repo_data(user: str, repositories: list) -> None:
