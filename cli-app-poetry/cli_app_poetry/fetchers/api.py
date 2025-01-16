@@ -15,6 +15,7 @@ The script processes multiple repositories for a given user, aggregates the
 total stars and forks across all repositories, and prints a summary """
 
 import sys
+import os
 import requests
 import csv
 
@@ -25,12 +26,15 @@ def fetch_github_repo_data(user: str, repositories: list, csv_file_path: str) ->
     total_stars = 0
     total_forks = 0
     try:
-        headers=["repository name","stars","forks","branches_count","commits_count"]
+        # Check if the file exists to decide whether to write headers
+        file_exists = os.path.exists(csv_file_path)
+        headers=["User","Repository_Name","Stars","Forks","Branches_Count","Commits_Count"]
 
         #Opening csv file in writer mode
-        with open(csv_file_path,mode="w",newline="",encoding="utf-8") as file:
+        with open(csv_file_path,mode="a",newline="",encoding="utf-8") as file:
             writer=csv.DictWriter(file,fieldnames=headers)
-            writer.writeheader()
+            if not file_exists:
+                writer.writeheader()
             for repo in repositories:
                 print(f"\nFetching data for repository: {repo}")
                 
@@ -61,11 +65,12 @@ def fetch_github_repo_data(user: str, repositories: list, csv_file_path: str) ->
 
                         #write the data to the csv
                         writer.writerow({
-                            "repository name":repo,
-                            "stars":stars,
-                            "forks":forks,
-                            "branches_count":branches_count,
-                            "commits_count":commits_count
+                            "User":user,
+                            "Repository_Name":repo,
+                            "Stars":stars,
+                            "Forks":forks,
+                            "Branches_Count":branches_count,
+                            "Commits_Count":commits_count
                         })
                         print(f"  Commits (latest 30): {len(commits)}")
                     else:
