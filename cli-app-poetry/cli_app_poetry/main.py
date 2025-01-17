@@ -14,9 +14,7 @@ from validators.schema import schema
 from validators.github_validator import GitHubValidators
 from fetchers.api import fetch_github_repo_data
 from importlib.resources import files
-
-# DEFAULT_SAMPLE_FILE = "sample.json"
-DEFAULT_SAMPLE_FILE =  files('cli_app_poetry.validators').joinpath('sample.json')
+from constants import DEFAULT_SAMPLE_FILE
 
 def display_sample_json(file_path: str) -> None:
     """Displays the content of the sample JSON file."""

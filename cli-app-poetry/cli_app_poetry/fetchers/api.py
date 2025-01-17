@@ -18,8 +18,7 @@ import sys
 import os
 import requests
 import csv
-
-GITHUB_API_URL = "https://api.github.com"
+from cli_app_poetry.constants import GITHUB_API_URL
 
 def fetch_github_repo_data(user: str, repositories: list, csv_file_path: str) -> None:
     """Fetches stars, forks, commits, and branches for multiple GitHub repos."""
