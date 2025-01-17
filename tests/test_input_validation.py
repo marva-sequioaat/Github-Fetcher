@@ -2,9 +2,12 @@ import pytest
 from cli_app_poetry.validators.github_validator import GitHubValidators
 
 # Initialize the GitHubValidators object for use in tests
-validator = GitHubValidators()
+@pytest.fixture
+def validator():
+    """Fixture that provides a GitHubValidators instance for testing"""
+    return GitHubValidators()
 
-def test_valid_username():
+def test_valid_username(validator):
     """
     Test case for validating valid GitHub usernames.
     A valid username should pass the following conditions:
@@ -15,7 +18,7 @@ def test_valid_username():
     assert validator.validate_username("john-doe123") == True  # valid username
     assert validator.validate_username("user1234") == True      # valid username with digits
 
-def test_invalid_username():
+def test_invalid_username(validator):
     """
     Test case for validating invalid GitHub usernames.
     Invalid usernames should raise a ValueError if:
@@ -30,7 +33,7 @@ def test_invalid_username():
     with pytest.raises(ValueError):
         validator.validate_username("john--doe")  # consecutive hyphens
 
-def test_valid_repository_name():
+def test_valid_repository_name(validator):
     """
     Test case for validating valid GitHub repository names.
     A valid repository name should pass the following conditions:
@@ -40,7 +43,7 @@ def test_valid_repository_name():
     assert validator.validate_repository_name("project_1") == True  # valid repository name with underscore
     assert validator.validate_repository_name("test.repo") == True  # valid repository name with period
 
-def test_invalid_repository_name():
+def test_invalid_repository_name(validator):
     """
     Test case for validating invalid GitHub repository names.
     Invalid repository names should raise a ValueError if:
