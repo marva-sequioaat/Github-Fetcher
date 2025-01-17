@@ -77,55 +77,117 @@ def validate_json(file_path: str) -> None:
 
 if __name__ == "__main__":
     import argparse
+    import json
+    from pathlib import Path
 
     parser = argparse.ArgumentParser(description="CLI JSON Validator")
     parser.add_argument("--show-sample", nargs="?", const=DEFAULT_SAMPLE_FILE, help="Path to the sample JSON file")
     parser.add_argument("--config", help="Path to the JSON config file to validate")
     args = parser.parse_args()
+
     try:
-        csv_file_path="github_repo_data.csv"
-        if args.show_sample and args.config:
-            display_sample_json(args.show_sample)
-            data=validate_json(args.config)
-            username=data.get("username")
-            repos=data.get("repositories")
+        csv_file_path = "github_repo_data.csv"
+        
+        if args.config:
+            # Validate config file exists
+            config_path = Path(args.config)
+            if not config_path.exists():
+                print(f"Error: Config file '{args.config}' not found.")
+                sys.exit(2)  # File not found
+            
+            # Validate config file is readable
+            if not config_path.is_file():
+                print(f"Error: '{args.config}' is not a file.")
+                sys.exit(3)  # Not a file
+                
+            try:
+                # Attempt to parse JSON
+                data = validate_json(args.config)
+            except json.JSONDecodeError as je:
+                print(f"Error: Invalid JSON format in '{args.config}': {str(je)}")
+                sys.exit(4)  # Invalid JSON format
+            except Exception as e:
+                print(f"Error reading config file: {str(e)}")
+                sys.exit(99)  # Unexpected error while reading file
+            
+            username = data.get("username")
+            repos = data.get("repositories")
             
             if username and repos:
+                if args.show_sample:
+                    display_sample_json(args.show_sample)
                 try:
-                    fetch_github_repo_data(username, repos,csv_file_path)
+                    fetch_github_repo_data(username, repos, csv_file_path)
                 except Exception as e:
-                    print(f"an error occured {e}")
+                    print(f"Error occurred while fetching GitHub data: {e}")
                     sys.exit(99)
             else:
-                print("Error: JSON file does not contain 'username' or 'repository'.")
+                print("Error: JSON file does not contain 'username' or 'repositories'.")
                 sys.exit(5)  # Missing required fields
+                
         elif args.show_sample:
             display_sample_json(args.show_sample)
-        elif args.config:
-            data=validate_json(args.config)
-            username=data.get("username")
-            repos=data.get("repositories")
-            if username and repos:
-                try:
-                    fetch_github_repo_data(username, repos,csv_file_path)
-                except Exception as e:
-                    print(f"an error occured {e}")
-                    sys.exit(99)
-            else:
-                print("Error: JSON file does not contain 'username' or 'repository'.")
-                sys.exit(5)  # Missing required fields
         else:
             print("Error: No arguments provided. Use --show-sample or --config.")
             sys.exit(1)  # No arguments provided
 
+        print("Operation completed successfully.")
+        sys.exit(0)  # Success exit code
+        
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        sys.exit(99)  # General unexpected error
+# if __name__ == "__main__":
+#     import argparse
+
+#     parser = argparse.ArgumentParser(description="CLI JSON Validator")
+#     parser.add_argument("--show-sample", nargs="?", const=DEFAULT_SAMPLE_FILE, help="Path to the sample JSON file")
+#     parser.add_argument("--config", help="Path to the JSON config file to validate")
+#     args = parser.parse_args()
+#     try:
+#         csv_file_path="github_repo_data.csv"
+#         if args.show_sample and args.config:
+#             display_sample_json(args.show_sample)
+#             data=validate_json(args.config)
+#             username=data.get("username")
+#             repos=data.get("repositories")
+            
+#             if username and repos:
+#                 try:
+#                     fetch_github_repo_data(username, repos,csv_file_path)
+#                 except Exception as e:
+#                     print(f"an error occured {e}")
+#                     sys.exit(99)
+#             else:
+#                 print("Error: JSON file does not contain 'username' or 'repository'.")
+#                 sys.exit(5)  # Missing required fields
+#         elif args.show_sample:
+#             display_sample_json(args.show_sample)
+#         elif args.config:
+#             data=validate_json(args.config)
+#             username=data.get("username")
+#             repos=data.get("repositories")
+#             if username and repos:
+#                 try:
+#                     fetch_github_repo_data(username, repos,csv_file_path)
+#                 except Exception as e:
+#                     print(f"an error occured {e}")
+#                     sys.exit(99)
+#             else:
+#                 print("Error: JSON file does not contain 'username' or 'repository'.")
+#                 sys.exit(5)  # Missing required fields
+#         else:
+#             print("Error: No arguments provided. Use --show-sample or --config.")
+#             sys.exit(1)  # No arguments provided
+
         
 
         
         
         
-        print("Operation completed successfully.")
-        sys.exit(0)  #success exit code
+#         print("Operation completed successfully.")
+#         sys.exit(0)  #success exit code
     
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        sys.exit(99)  # General unexpected error
+#     except Exception as e:
+#         print(f"Unexpected error: {e}")
+#         sys.exit(99)  # General unexpected error
