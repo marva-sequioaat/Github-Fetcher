@@ -25,6 +25,7 @@ import csv
 import logging
 import os
 import sys
+import time
 from typing import Tuple, List, Dict, Any
 from cli_app_poetry.constants import GITHUB_API_URL
 # Configure logging
@@ -62,47 +63,58 @@ def fetch_github_data(user: str, repositories: list) -> Tuple[List[Dict[str, Any
     
     for repo in repositories:
         logger.info(f"Fetching data for repository: {repo}")
-        try:
-            repo_url = f"{GITHUB_API_URL}/repos/{user}/{repo}"
-            response = requests.get(repo_url)
-            if response.status_code == 200:
-                repo_data = response.json()
-                stars = repo_data.get('stargazers_count', 0)
-                forks = repo_data.get('forks_count', 0)
-
-                # Fetch branches
-                branches_url = f"{repo_url}/branches"
-                branches_response = requests.get(branches_url)
-                if branches_response.status_code != 200:
-                    logger.error(f"Error fetching branches data: {branches_response.status_code}")
-                    fetch_success = False
-                    continue
-                branches_count = len(branches_response.json())
-
-                # Fetch commits
-                commits_url = f"{repo_url}/commits"
-                commits_response = requests.get(commits_url)
-                if commits_response.status_code != 200:
-                    logger.error(f"Error fetching commits data: {commits_response.status_code}")
-                    fetch_success = False
-                    continue
-                commits_count = len(commits_response.json())
-
-                repo_data_list.append({
-                    "User": user,
-                    "Repository_Name": repo,
-                    "Stars": stars,
-                    "Forks": forks,
-                    "Branches_Count": branches_count,
-                    "Commits_Count": commits_count
-                })
-            else:
-                logger.error(f"Error fetching repository data: {response.status_code}")
-                fetch_success = False
+        retries=0
+        while retries <MAX_RETRIES:
+            try:
+                repo_url = f"{GITHUB_API_URL}/repos/{user}/{repo}"
+                response = requests.get(repo_url)
                 
-        except Exception as e:
-            logger.error(f"Unexpected error fetching data for {repo}: {e}", exc_info=True)
-            fetch_success = False
+                if response.status_code == 200:
+                    repo_data = response.json()
+                   
+                    stars = repo_data.get('stargazers_count', 0)
+                    forks = repo_data.get('forks_count', 0)
+                    
+                    # Fetch branches
+                    branches_url = f"{repo_url}/branches"
+                    branches_response = requests.get(branches_url)
+                    if branches_response.status_code != 200:
+                        logger.error(f"Error fetching branches data: {branches_response.status_code}")
+                        fetch_success = False
+                        break
+                    branches_count = len(branches_response.json())
+                  
+                    # Fetch commits
+                    commits_url = f"{repo_url}/commits"
+                    commits_response = requests.get(commits_url)
+                    if commits_response.status_code != 200:
+                        logger.error(f"Error fetching commits data: {commits_response.status_code}")
+                        fetch_success = False
+                        break
+                    commits_count = len(commits_response.json())
+                   
+                    repo_data_list.append({
+                        "User": user,
+                        "Repository_Name": repo,
+                        "Stars": stars,
+                        "Forks": forks,
+                        "Branches_Count": branches_count,
+                        "Commits_Count": commits_count
+                    })
+                    break
+                elif response.status_code in {500,502,503,504}:
+                    logger.warning(f"Server error {response.status_code} for {repo}. Retrying in {RETRY_DELAY} seconds ...")
+                    retries+=1
+                    time.sleep(RETRY_DELAY)
+              
+                else:
+                    logger.error(f"Error fetching repository data: {response.status_code},{response.json()}")
+                    fetch_success = False
+                    break
+                    
+            except Exception as e:
+                logger.error(f"Unexpected error fetching data for {repo}: {e}", exc_info=True)
+                fetch_success = False
             
     return repo_data_list, fetch_success
 

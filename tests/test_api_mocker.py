@@ -26,7 +26,99 @@ import requests
 import logging
 from typing import Dict, List, Any
 from cli_app_poetry.fetchers.api import fetch_github_repo_data,fetch_github_data,write_to_csv
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock,patch
+
+# MAX_RETRIES = 3
+# RETRY_DELAY = 30
+
+
+# @pytest.fixture
+# def mock_github_api_data():
+#     """
+#     Fixture to provide mock data for GitHub API responses.
+#     """
+#     repo_data = {
+#         "stargazers_count": 10,
+#         "forks_count": 5,
+#     }
+#     branches_data = [{"name": "main"}, {"name": "dev"}]
+#     commits_data = [{"sha": "commit1"}, {"sha": "commit2"}]
+#     return repo_data, branches_data, commits_data
+
+
+# @patch("time.sleep", return_value=None)  # Mock sleep to avoid actual delays
+# def test_fetch_github_data_with_retries(mock_sleep, mocker, mock_github_api_data):
+#     """
+#     Test fetch_github_data function for retry logic on transient errors.
+#     """
+#     user = "test_user"
+#     repositories = ["test_repo"]
+#     repo_data, branches_data, commits_data = mock_github_api_data
+
+#     # Mock requests.get
+#     mock_get = mocker.patch("requests.get", autospec=True)
+#     mock_get.side_effect = [
+#         MagicMock(status_code=500),  # First attempt (server error)
+#         MagicMock(status_code=502),  # Second attempt (server error)
+#         MagicMock(status_code=200, json=lambda: repo_data),  # Successful attempt
+#         MagicMock(status_code=200, json=lambda: branches_data),  # Branches
+#         MagicMock(status_code=200, json=lambda: commits_data),  # Commits
+#     ]
+
+#     result, success = fetch_github_data(user, repositories)
+
+#     assert mock_get.call_count == 5  # 3 retries for repo + branches + commits
+#     assert success is True
+#     assert len(result) == 1
+#     assert result[0]["Stars"] == 10
+#     assert result[0]["Forks"] == 5
+#     assert result[0]["Branches_Count"] == 2
+#     assert result[0]["Commits_Count"] == 2
+#     mock_sleep.assert_called_with(RETRY_DELAY)
+
+
+# @patch("time.sleep", return_value=None)
+# def test_fetch_github_data_retry_exhaustion(mock_sleep, mocker):
+#     """
+#     Test fetch_github_data function when retries are exhausted.
+#     """
+#     user = "test_user"
+#     repositories = ["test_repo"]
+
+#     # Mock requests.get to always return a server error
+#     mock_get = mocker.patch("requests.get", autospec=True)
+#     mock_get.return_value = MagicMock(status_code=500)
+
+#     result, success = fetch_github_data(user, repositories)
+
+#     assert mock_get.call_count == MAX_RETRIES  # Retry attempts should cap at MAX_RETRIES
+#     assert success is False
+#     assert result == []
+#     mock_sleep.assert_called_with(RETRY_DELAY)
+
+
+# def test_fetch_github_data_failure_with_logging(mocker, caplog):
+#     """
+#     Test fetch_github_data function for logging on failure.
+#     """
+#     user = "test_user"
+#     repositories = ["test_repo"]
+
+#     # Mock requests.get to return a client error
+#     mock_get = mocker.patch("requests.get", autospec=True)
+#     mock_get.return_value = MagicMock(status_code=404, json=lambda: {"message": "Not Found"})
+
+#     with caplog.at_level(logging.ERROR):
+#         result, success = fetch_github_data(user, repositories)
+
+#     assert success is False
+#     assert result == []
+#     assert "Error fetching repository data: 404" in caplog.text
+
+
+
+
+
 
 
 @pytest.fixture
