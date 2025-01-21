@@ -27,7 +27,7 @@ import os
 import sys
 import time
 from typing import Tuple, List, Dict, Any
-from cli_app_poetry.constants import GITHUB_API_URL
+from cli_app_poetry.constants import GITHUB_API_URL,MAX_RETRIES,RETRY_DELAY
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -35,8 +35,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
-MAX_RETRIES=3
-RETRY_DELAY=30
+
 def fetch_github_data(user: str, repositories: list) -> Tuple[List[Dict[str, Any]], bool]:
     """
     Fetch repository data from GitHub API for specified repositories.
