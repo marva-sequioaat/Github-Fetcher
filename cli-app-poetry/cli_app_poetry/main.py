@@ -91,7 +91,8 @@ if __name__ == "__main__":
         parser.add_argument("--config", help="Path to the JSON config file to validate")
         args = parser.parse_args()
 
-        csv_file_path = "/mnt/c/Users/SequoiaAT/Desktop/Marva/github_repo_data.csv"
+        # csv_file_path = "/mnt/c/Users/SequoiaAT/Desktop/Marva/github_repo_data.csv"
+        csv_file_path = "/data/github_repo_data.csv"
         
         if args.config:
             # Validate config file exists
