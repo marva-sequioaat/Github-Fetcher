@@ -11,5 +11,5 @@ COPY . /app
 
 RUN mkdir -p /data
 
-CMD [ "python","__main__" ]
+CMD [ "cli-app-poetry" ]
 
