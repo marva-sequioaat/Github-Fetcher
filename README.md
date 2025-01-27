@@ -6,21 +6,14 @@ This CLI tool validates configuration files that will be used to fetch metrics (
 
 # Project Files
 
-cd cli-app-poetry/cli_app_poetry
+cd 
 
-main.py: Main program that reads and validates the JSON file
-validators/github_validator.py: Contains all validation rules for GitHub data
-validators/sample.json: Example file showing how your input should look
-tests/test_input_validation.py: Test cases to verify the validators work correctly
-fetchers/api.py- Contains function that calls Github api and fetch data
+cli-app-poetry/cli_app_poetry/main.py: Main program that reads and validates the JSON file
+cli-app-poetry/cli_app_poetry/validators/github_validator.py: Contains all validation rules for GitHub data
+cli-app-poetry/cli_app_poetry/validators/sample.json: Example file showing how your input should look
+cli-app-poetry/tests/test_input_validation.py: Test cases to verify the validators work correctly
+cli-app-poetry/cli_app_poetry/fetchers/api.py- Contains function that calls Github api and fetch data
 
-
-
-## Install Dependencies
-
-To install the dependencies for this project, make sure you have **Poetry** installed. You can install it by running the following command:
-
-pipx install poetry
 
 
 # create json file in the following format
@@ -31,32 +24,32 @@ pipx install poetry
 }
 
 # setting up the project
-after cloning this project,you need to run the following commands to set up the poetry app
+after cloning this project,you need to run the following commands to set up the project
 
-cd ..
+cd FETGitHub
 
-poetry install
+Build the Docker image:
 
-to activate the virtual env give the command
+docker build -t cli-app .
 
-poetry env activate
+# Usage
+# Running the CLI Application
 
+The application requires a configuration file and mounts a local directory for data processing.
 
-this will prints the activate command of the virtual environment to the console. Manually copy paste the command and run them to activate venv
+Basic usage:
+docker run  -v /path/to/your/local/directory:/data   <image_id>   cli-app-poetry --config /data/your_input_json_file_name
 
-# run the program
+# Volume Mounting
 
-cd cli_app_poetry
+The -v flag mounts your local directory to the /data directory in the container
+Ensure your configuration file is in the mounted directory
+Replace /path/to/your/local/directory with your actual local path
 
-python main.py --config your_config.json
+# Running Tests
+To run the test suite:
 
-# Testing
-
-to run test give the following command
-
-cd ..
-
-pytest -svv tests
+docker run eaf247369f62  pytest /app/tests
 
 # Exit code
  0 -Success:The operation completed successfully without any errors.
