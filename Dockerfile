@@ -1,27 +1,15 @@
 FROM python:3.11-slim
 
-# Install pipx
-RUN pip install --no-cache-dir pipx \
-    && python3 -m pipx ensurepath
-
-# Install Poetry using pipx and ensure it's in PATH
-RUN python3 -m pipx install poetry \
-    && python3 -m pipx ensurepath
-
-# Add pipx binary directory to PATH
-ENV PATH="/root/.local/bin:${PATH}"
-
-
 WORKDIR /app
 
-COPY cli-app-poetry ./
-# /pyproject.toml cli-app-poetry/poetry.lock ./
+COPY cli-app-poetry/dist/cli_app_poetry-0.1.0-py3-none-any.whl /tmp/
+# Install the wheel file
 
-RUN poetry config virtualenvs.create false
+RUN pip install /tmp/cli_app_poetry-0.1.0-py3-none-any.whl
 
-RUN poetry install --no-interaction --no-ansi 
-
+COPY . /app
 
 RUN mkdir -p /data
 
-ENTRYPOINT ["python","cli_app_poetry/main.py"]
+CMD [ "python","__main__" ]
+

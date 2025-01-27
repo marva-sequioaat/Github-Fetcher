@@ -10,11 +10,11 @@ import os
 import sys
 from typing import Optional
 from jsonschema import validate, ValidationError
-from validators.schema import schema
-from validators.github_validator import GitHubValidators
-from fetchers.api import fetch_github_repo_data
+from cli_app_poetry.validators.schema import schema
+from cli_app_poetry.validators.github_validator import GitHubValidators
+from cli_app_poetry.fetchers.api import fetch_github_repo_data
 from importlib.resources import files
-from constants import DEFAULT_SAMPLE_FILE
+from cli_app_poetry.constants import DEFAULT_SAMPLE_FILE
 import logging
 import argparse
 from pathlib import Path
@@ -83,7 +83,7 @@ def validate_json(file_path: str) -> None:
         logger.error(f"Unexpected error during validation: {e}", exc_info=True)
         sys.exit(99)  # Unexpected error
 
-if __name__ == "__main__":
+def main():
     try:
         parser = argparse.ArgumentParser(description="CLI JSON Validator")
         parser.add_argument("--show-sample", nargs="?", const=DEFAULT_SAMPLE_FILE, 

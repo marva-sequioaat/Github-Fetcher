@@ -8,7 +8,7 @@ authors = [
 
 packages = [{include = "cli_app_poetry"}]
 include = [
-    "cli_app_poetry/validators/sample.json",
+   "cli_app_poetry/validators/sample.json",
 ]
 
 
