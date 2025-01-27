@@ -49,7 +49,7 @@ Replace /path/to/your/local/directory with your actual local path
 # Running Tests
 To run the test suite:
 
-docker run eaf247369f62  pytest /app/tests
+docker run <image id>  pytest /app/tests
 
 # Exit code
  0 -Success:The operation completed successfully without any errors.

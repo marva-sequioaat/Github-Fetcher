@@ -16,7 +16,5 @@ COPY tests /app/tests
 
 RUN mkdir -p /data
 
-# Run tests automatically during container start
-
 CMD [ "cli-app-poetry" ]
 
