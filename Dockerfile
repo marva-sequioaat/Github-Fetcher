@@ -16,5 +16,5 @@ COPY tests /app/tests
 
 RUN mkdir -p /data
 
-CMD [ "cli-app-poetry" ]
+CMD [ "make","run" ]
 
