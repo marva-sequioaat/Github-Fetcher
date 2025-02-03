@@ -26,11 +26,11 @@ cli-app-poetry/cli_app_poetry/fetchers/api.py- Contains function that calls Gith
 # setting up the project
 after cloning this project,you need to run the following commands to set up the project
 
-cd FETGitHub
+ cd FETGitHub
 
-Build the Docker image:
+ Build the Docker image:
 
-docker build -t cli-app .
+ docker build -t cli-app .
 
 # Usage
 # Running the CLI Application
@@ -48,6 +48,7 @@ Replace /path/to/your/local/directory with your actual local path
 
 # Running Tests
 To run the test suite:
+
 
 docker run <image id>  pytest /app/tests
 
